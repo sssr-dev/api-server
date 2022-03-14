@@ -5,5 +5,6 @@ CREATE TABLE links (
     url_raw          STRING  NOT NULL,
     url_check_banned STRING,
     url_short        STRING  UNIQUE
-                             NOT NULL
+                             NOT NULL,
+    counter          INTEGER DEFAULT (0)
 );

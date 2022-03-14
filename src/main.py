@@ -18,7 +18,7 @@ def pa():
 
 iapp.app_errors_handler(codes, lambda error: Responses.error(error.name, error.code))
 
-iapp.add_route("cc", lambda: api.ShortedLinks(request.args).do())
+iapp.add_route("cc", lambda: api.ShortedLinks(request).do())
 
 if __name__ == '__main__':
     iapp.run()
