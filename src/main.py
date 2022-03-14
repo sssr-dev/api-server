@@ -16,10 +16,9 @@ def pa():
     return Responses.okay(j)
 
 
-iapp.get_db_conn('cc')
-app.add_url_rule(**endpoints['cc'] << "fs", f=lambda: api.ShortedLinks(request.args))
+iapp.app_errors_handler(codes, lambda error: Responses.error(error.name, error.code))
+
+iapp.add_route("cc", lambda: api.ShortedLinks(request.args).do())
 
 if __name__ == '__main__':
-    iapp.app_errors_handler(codes, lambda error: Responses.error(error.name, error.code))
-    # Responses.error("Allow only 'http://' or 'https://' urls.", 10)
     iapp.run()

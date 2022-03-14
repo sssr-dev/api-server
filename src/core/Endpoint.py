@@ -18,5 +18,5 @@ class Endpoint:
 
     def __lshift__(self, mode):
         if mode == "fs":  # fs: Flask settings
-            return {"rule": self.endpoint, "methods": self.methods}
+            return {"rule": self.endpoint, "methods": self.methods, "endpoint": None}
         return None

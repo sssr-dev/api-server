@@ -1,10 +1,10 @@
 import json
 import os
-from typing import Union, Any
+from typing import Union, Any, Callable
 import sqlite3
 from loguru import logger
 from flask import Flask
-from . import DBHelp, Endpoint
+from .Endpoint import Endpoint
 from .Storage import Storage
 
 Storage = Storage()
@@ -82,6 +82,11 @@ class InitAPI:
             else:
                 raise ValueError(f"Cannot find '{db_path}'")
         raise ValueError(f"What is '{db_type}'?")
+
+    def add_route(self, endpoint: str, f: Callable):
+        self.debug(f"Add route for endpoint '{endpoint}'")
+        self.get_db_conn(endpoint)
+        self.app.route(**self.endpoints[endpoint] << "fs")(f)
 
     @property
     def app(self) -> Flask:
