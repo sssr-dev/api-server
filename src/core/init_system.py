@@ -1,22 +1,13 @@
 import json
 import os
-from typing import Union, List
-
+from typing import Union, Any
+import sqlite3
 from loguru import logger
-
 from flask import Flask
+from . import DBHelp, Endpoint
+from .Storage import Storage
 
-
-class Endpoint:
-
-    name: str = None
-    endpoint: str = None
-    version: Union[str, int] = None
-    need_auth: bool = False
-    db_config: dict = dict()
-
-    def __repr__(self) -> str:
-        return f"<Endpoint name={self.name} endpoint={self.endpoint} version={self.version} need_auth={self.need_auth} db_config={self.db_config}>"
+Storage = Storage()
 
 
 class InitAPI:
@@ -32,13 +23,15 @@ class InitAPI:
         self.__flask: Flask = None
         self.flask_settings: dict = None
 
-        self.endpoints: List[Endpoint] = list()
+        self.endpoints: dict = dict()
         self.endpoints_info: dict = None
 
         self.config_path = config_path
 
         self._read_config()
         self._create_endpoints()
+
+        self._cached_db: dict = dict()
 
     def _read_config(self):
         self.debug("_read_config(self)")
@@ -58,16 +51,43 @@ class InitAPI:
     def _create_endpoints(self):
         for k, v in self.endpoints_info.items():
             e = Endpoint()
-            e.name = k
+            e.name = v.get("name")
             e.endpoint = v.get('endpoint')
             e.version = v.get("version")
             e.need_auth = v.get("need_auth")
             e.db_config = v.get("db_config")
             self.debug(f"{e!r}")
-            self.endpoints.append(e)
+            self.endpoints.update({k: e})
+
+    def app_errors_handler(self, codes: Union[list, tuple, int], f: Any):
+        if isinstance(codes, int):
+            codes = (codes, )
+
+        for code in codes:
+            self.debug(f"self.app.register_error_handler({code}, {f})")
+            self.app.register_error_handler(code, f)
+
+    def get_db_conn(self, endpoint: str):
+        if self._cached_db.get(endpoint):
+            return self._cached_db[endpoint]
+        db_config = self.endpoints[endpoint].db_config
+        db_type = db_config.get('type').lower()
+        if db_type == "sqlite":
+            db_path = db_config['path']
+            if os.path.isfile(db_path):
+                db_conn = sqlite3.connect(db_path)
+                self._cached_db.update({endpoint: db_conn})
+                Storage.cached_db.update({endpoint: db_conn})
+                return db_conn
+            else:
+                raise ValueError(f"Cannot find '{db_path}'")
+        raise ValueError(f"What is '{db_type}'?")
 
     @property
-    def flask(self):
+    def app(self) -> Flask:
         if self.__flask is None:
             self.__flask = Flask(import_name=self.name)
         return self.__flask
+
+    def run(self):
+        self.__flask.run(**self.flask_settings)

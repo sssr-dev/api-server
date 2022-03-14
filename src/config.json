@@ -5,14 +5,16 @@
 
   "flask_settings": {
     "host": "127.0.0.1",
-    "port": "11491"
+    "port": "11491",
+    "debug": true
   },
 
   "endpoints_info": {
 
-    "Links": {
-      "endpoint": "/cc/<method>",
-      "version": null,
+    "cc": {
+      "name": "Link shortening",
+      "endpoint": "/cc",
+      "version": "non",
       "need_auth": false,
       "db_config": {
         "type": "SQLite",
