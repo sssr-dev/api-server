@@ -1,0 +1,24 @@
+{
+
+  "name": "SSSR-dev api",
+  "version": "0.0.1",
+
+  "flask_settings": {
+    "host": "127.0.0.1",
+    "port": "11491"
+  },
+
+  "endpoints_info": {
+
+    "Links": {
+      "endpoint": "/cc/<method>",
+      "version": null,
+      "need_auth": false,
+      "db_config": {
+        "type": "SQLite",
+        "path": "./sqlite_db/cc.db"
+      }
+    }
+
+  }
+}
