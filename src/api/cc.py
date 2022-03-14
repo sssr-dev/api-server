@@ -3,7 +3,7 @@ import time
 from string import ascii_letters, digits
 
 import flask
-from flask import abort
+from flask import abort, redirect
 
 from core import Responses, DBHelp, Storage
 
@@ -15,8 +15,16 @@ class ShortedLinks(DBHelp):
     def __init__(self, request: flask.Request):
         super().__init__("sqlite", Storage.cached_db['cc'], "links")
         self.args: dict = request.args
-        # self.from_ip: str = request.headers.get("X-Real-IP") or request.headers.get("Host")  # Nginx proxy
-        self.from_ip: str = request.headers.get("Cf-Connecting-Ip") or request.headers.get("Host")  # Cloudflare proxy
+        headers = request.headers
+        if headers.get('Cdn-Loop') == "cloudflare":
+            # Cloudflare proxy
+            self.from_ip: str = request.headers.get("Cf-Connecting-Ip") or request.headers.get("Host")
+        else:
+            # Nginx proxy
+            self.from_ip: str = request.headers.get("X-Real-IP") or request.headers.get("Host")
+
+        # Add to nginx: proxy_set_header X-Real-HostName $host;
+        self.hostname = headers.get('X-Real-Hostname')
 
     @staticmethod
     def _create_short():
@@ -67,6 +75,10 @@ class ShortedLinks(DBHelp):
 
         elif short_code:
             data = self._get(short_code)
+
+            if self.hostname == "cc.sssr.dev":
+                if data[1] == 0:
+                    return redirect(data[0]['url'])
 
         if not data[0]:
             abort(403)
