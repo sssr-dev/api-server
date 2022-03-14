@@ -48,6 +48,7 @@ class Responses:
             "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
             "Access-Control-Allow-Origin": "*",
             'Accept': 'application/x-www-form-urlencoded',
+            'Access-Control-Allow-Headers': "accept, accept-encoding, content-type, origin, user-agent"
         })
         for cookie in cookies:
             resp.set_cookie(cookie)
