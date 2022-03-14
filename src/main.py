@@ -16,7 +16,7 @@ def pa():
     return Responses.okay(j)
 
 
-iapp.app_errors_handler(codes, lambda error: Responses.error(error.name, error.code))
+iapp.app_errors_handler(codes, lambda error: (Responses.error(error.name, error.code), error.code))
 
 iapp.add_route("cc", lambda: api.ShortedLinks(request).do())
 
