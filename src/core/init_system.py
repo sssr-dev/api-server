@@ -68,19 +68,26 @@ class InitAPI:
             self.app.register_error_handler(code, f)
 
     def get_db_conn(self, endpoint: str):
+
         if self._cached_db.get(endpoint):
-            return self._cached_db[endpoint]
+            if self.endpoints[endpoint].db_config['type'] != "sqlite":
+                return self._cached_db[endpoint]
+
         db_config = self.endpoints[endpoint].db_config
         db_type = db_config.get('type').lower()
+
         if db_type == "sqlite":
             db_path = db_config['path']
+
             if os.path.isfile(db_path):
                 db_conn = sqlite3.connect(db_path)
-                self._cached_db.update({endpoint: db_conn})
-                Storage.cached_db.update({endpoint: db_conn})
+                self._cached_db.update({endpoint: db_path})
+                Storage.cached_db.update({endpoint: db_path})
                 return db_conn
+
             else:
                 raise ValueError(f"Cannot find '{db_path}'")
+
         raise ValueError(f"What is '{db_type}'?")
 
     def add_route(self, endpoint: str, f: Callable):

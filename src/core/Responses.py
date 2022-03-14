@@ -44,7 +44,7 @@ class Responses:
             cookies = []
         resp = flask.jsonify(rv)
         resp.headers.update({
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/json",
             "Access-Control-Allow-Methods": "GET, POST",
             "Access-Control-Allow-Origin": "*",
             'Accept': 'application/x-www-form-urlencoded',

@@ -8,14 +8,14 @@ vk_check_banned = "https://vk.com/away.php?to="
 class ShortedLinks(DBHelp):
 
     def __init__(self, args):
-        super().__init__("sqlite", Storage.cached_db['cc'])
+        super().__init__("sqlite", Storage.cached_db['cc'], "links")
         self.args: dict = args
 
-    def _create(self, url: str) -> dict:
+    def _create(self, url: str) -> tuple:
         if not any((url.startswith("http://"), url.startswith("https://"))):
-            return Responses.error(f"Allow only 'http://' or 'https://' urls.", 10)
+            return {"error": f"Allow only 'http://' or 'https://' urls."}, 10
 
-        return Responses.okay({"create": vk_check_banned + url})
+        return {"create": vk_check_banned + url}, 0
 
     def do(self):
 
@@ -23,18 +23,18 @@ class ShortedLinks(DBHelp):
         url_create = self.args.get('create')
         url_raw = self.args.get("raw")
 
-        data = None
+        data = None, 500
 
         if url_to:
-            data = Responses.okay({"from": url_to})
+            data = {"from": url_to}, 0
 
         elif url_create:
-            return self._create(url_create)
+            data = self._create(url_create)
 
         elif url_raw:
-            return {"raw": url_raw}
+            data = {"url_raw": self.sql_get("url_raw", ("url_short", url_raw)).get("url_raw")}, 0
 
         if not data:
             abort(403)
 
-        return data
+        return Responses.make(Responses.okay(*data) if data[1] == 0 else Responses.error(*data))
