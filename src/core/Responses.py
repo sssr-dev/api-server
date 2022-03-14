@@ -45,7 +45,7 @@ class Responses:
         resp = flask.jsonify(rv)
         resp.headers.update({
             "Content-Type": "application/json",
-            "Access-Control-Allow-Methods": "GET, POST",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
             "Access-Control-Allow-Origin": "*",
             'Accept': 'application/x-www-form-urlencoded',
         })
