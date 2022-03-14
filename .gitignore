@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 .idea/
-*cc.db
 *DS_*
+src/sqlite_db/cc.db
