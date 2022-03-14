@@ -15,7 +15,8 @@ class ShortedLinks(DBHelp):
     def __init__(self, request: flask.Request):
         super().__init__("sqlite", Storage.cached_db['cc'], "links")
         self.args: dict = request.args
-        self.from_ip: str = request.headers.get("X-Real-IP") or request.headers.get("Host")
+        # self.from_ip: str = request.headers.get("X-Real-IP") or request.headers.get("Host")  # Nginx proxy
+        self.from_ip: str = request.headers.get("Cf-Connecting-Ip") or request.headers.get("Host")  # Cloudflare proxy
 
     @staticmethod
     def _create_short():

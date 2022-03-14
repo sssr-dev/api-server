@@ -1,12 +1,12 @@
 {
 
   "name": "SSSR-dev api",
-  "version": "0.0.1",
+  "version": "0.1.0",
 
   "flask_settings": {
-    "host": "127.0.0.1",
+    "host": "0.0.0.0",
     "port": "11491",
-    "debug": true
+    "debug": false
   },
 
   "endpoints_info": {
