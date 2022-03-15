@@ -1,7 +1,7 @@
 {
 
   "name": "SSSR-dev api",
-  "version": "0.1.0",
+  "version": "Beta 0.1.1",
 
   "flask_settings": {
     "host": "0.0.0.0",
