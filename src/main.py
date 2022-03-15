@@ -1,5 +1,5 @@
 from flask import request
-from core import InitAPI, Responses
+from core import InitAPI, Responses, get_hostname
 import api
 
 codes = (403, 404, 500)
@@ -10,21 +10,7 @@ app = iapp.app
 
 @app.route('/')
 def pa():
-    headers = request.headers
-    hostname = request.host
-
-    if headers.get('Cdn-Loop') == "cloudflare":
-        # Cloudflare proxy
-        from_ip: str = request.headers.get("Cf-Connecting-Ip")
-    else:
-        # Nginx proxy
-        from_ip: str = request.headers.get("X-Real-IP")
-        # Add to nginx: proxy_set_header X-Real-HostName $host;
-        hostname = headers.get('X-Real-Hostname') or hostname
-
-    if from_ip is None:
-        # if no proxy
-        from_ip: str = request.headers.get("Host")
+    from_ip, hostname = get_hostname(request)
 
     j = dict()
     j.update({"name": iapp.name, "version": iapp.config['version'], "client_info": {"ip": from_ip, "href": hostname}, "endpoints": {}})

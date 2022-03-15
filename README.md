@@ -27,7 +27,7 @@ $ python main.py
 ```
 
 ### Nginx configuration
-```
+```js
 server {
     server_name sssr.dev www.sssr.dev;
     listen 80;
@@ -53,7 +53,8 @@ server {
 
     location / {
         proxy_pass http://127.0.0.1:11491/;
-        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header Ng-Real-Ip $remote_addr;
+        proxy_set_header Ng-Real-Hostname $host;    
     }
 }
 server {
@@ -65,9 +66,9 @@ server {
     listen [::]:443;
     
     location / {
-        proxy_pass http://127.0.0.1:11491/cc?get=;   
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Real-HostName $host;
+        proxy_pass http://127.0.0.1:11491/cc?v=1.1&code=;   
+        proxy_set_header Ng-Real-Ip $remote_addr;
+        proxy_set_header Ng-Real-Hostname $host;  
     }
 }
 ```
