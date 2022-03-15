@@ -7,15 +7,14 @@ from .Endpoint import Endpoint
 
 
 class ProxyHeaders:
-    NGINX_IP = "Ng-Real-Ip"
-    NGINX_HOSTNAME = "Ng-Real-Hostname"
+    NGINX_IP = r"Ng-Real-Ip"
+    NGINX_HOSTNAME = r"Ng-Real-Hostname"
 
-    CLOUDFLARE_IP = "Cf-Connecting-Ip"
+    CLOUDFLARE_IP = r"Cf-Connecting-Ip"
 
 
 def get_hostname(request: flask.Request):
     headers = request.headers
-    hostname = None
 
     if headers.get('Cdn-Loop') == "cloudflare":
         # Cloudflare proxy
@@ -23,13 +22,13 @@ def get_hostname(request: flask.Request):
     else:
         # Nginx proxy
         from_ip: str = headers.get(ProxyHeaders.NGINX_IP)
-        # Add to nginx: proxy_set_header Ng-Real-Hostname $host;
-        hostname = headers.get(ProxyHeaders.NGINX_HOSTNAME)
 
     if from_ip is None:
         # if no proxy
         from_ip: str = request.headers.get("Host")
 
+    # Add to nginx: proxy_set_header Ng-Real-Hostname $host;
+    hostname: str = headers.get(ProxyHeaders.NGINX_HOSTNAME)
     if hostname is None:
         hostname = request.host
 
