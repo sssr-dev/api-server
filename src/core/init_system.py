@@ -94,9 +94,11 @@ class InitAPI:
 
         raise ValueError(f"What is '{db_type}'?")
 
-    def response(self, data):
-
-        return Responses.make(Responses.okay(*data) if data[1] == 0 else Responses.error(*data), 404 if data[1] == 404 else 200)
+    @staticmethod
+    def response(data):
+        if isinstance(data, tuple) and len(data) == 2:
+            return Responses.make(Responses.okay(*data) if data[1] == 0 else Responses.error(*data), 404 if data[1] == 404 else 200)
+        return data
 
     def add_route(self, endpoint: str, f: Callable):
         self.debug(f"Add route for endpoint '{endpoint}'")
