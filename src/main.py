@@ -19,6 +19,7 @@ def pa():
 iapp.app_errors_handler(codes, lambda error: (Responses.make(Responses.error(error.name, error.code)), error.code))
 
 iapp.add_route("cc", lambda: api.ShortedLinks(request).do())
+iapp.add_route("git_counter", lambda: api.GitHubCounter(request).do())
 
 if __name__ == '__main__':
     iapp.run()
