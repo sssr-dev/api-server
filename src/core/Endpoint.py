@@ -13,7 +13,12 @@ class Endpoint:
     db_config: dict = None
 
     def __repr__(self) -> str:
+        # All information about the endpoint
         return f"<Endpoint '{self.import_name}' name='{self.name}' endpoint='{self.endpoint}' methods={self.methods} version='{self.version}' need_auth={self.need_auth} db_config={self.db_config}>"
+
+    def __str__(self) -> str:
+        # Information about the endpoint without the database connection
+        return f"<Endpoint '{self.import_name}' name='{self.name}' endpoint='{self.endpoint}' methods={self.methods} version='{self.version}' need_auth={self.need_auth}>"
 
     def __dict__(self) -> dict:
         return {"rule": self.endpoint, "methods": self.methods}

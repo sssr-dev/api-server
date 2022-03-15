@@ -10,9 +10,27 @@ app = iapp.app
 
 @app.route('/')
 def pa():
+    headers = request.headers
+    hostname = request.host
+
+    if headers.get('Cdn-Loop') == "cloudflare":
+        # Cloudflare proxy
+        from_ip: str = request.headers.get("Cf-Connecting-Ip")
+    else:
+        # Nginx proxy
+        from_ip: str = request.headers.get("X-Real-IP")
+        # Add to nginx: proxy_set_header X-Real-HostName $host;
+        hostname = headers.get('X-Real-Hostname') or hostname
+
+    if from_ip is None:
+        # if no proxy
+        from_ip: str = request.headers.get("Host")
+
     j = dict()
+    j.update({"name": iapp.name, "version": iapp.config['version'], "client_info": {"ip": from_ip, "href": hostname}, "endpoints": {}})
     for k, v in endpoints.items():
-        j.update({k: f'{v!r}'})
+        j['endpoints'].update({k: f'{v!s}'})
+
     return Responses.okay(j)
 
 

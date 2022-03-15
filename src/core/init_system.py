@@ -20,6 +20,7 @@ class InitAPI:
         self.log = logger
         self.debug = self.log.debug
 
+        self.config = {"name": "NO NAME", "flask_settings": {"host": "localhost", "port": 3000}}
         self.name: str = None
 
         self.__flask: Flask = None
@@ -40,15 +41,14 @@ class InitAPI:
         if os.path.isfile(self.config_path):
             self.debug(f"Config file: %s - found" % self.config_path)
             with open(self.config_path, 'r') as f:
-                config = json.load(f)
+                self.config = json.load(f)
         else:
             self.debug(f"Cannot found config file at %s. Use default." % self.config_path)
-            config = {"name": "NO NAME", "flask_settings": {"host": "localhost", "port": 3000}}
-            self.debug(config)
+            self.debug(self.config)
 
-        self.name = config.get("name")
-        self.flask_settings = config.get("flask_settings")
-        self.endpoints_info = config.get("endpoints_info")
+        self.name = self.config.get("name")
+        self.flask_settings = self.config.get("flask_settings")
+        self.endpoints_info = self.config.get("endpoints_info")
 
     def _create_endpoints(self):
         for k, v in self.endpoints_info.items():
