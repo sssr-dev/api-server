@@ -58,11 +58,14 @@ class ShortedLinks(DBHelp):
         return data
 
     def _nginx_cc(self):
-        url, exit_code = self.args.get('nginx')
-        if exit_code == 0:
-            return url, exit_code
-        else:
-            return '<script>history.back(-1)</script>'
+        short_code = self.args.get('nginx')
+
+        if len(short_code) == self.short_code_len:
+            url_object, exit_code = self._get(short_code)
+            if exit_code == 0:
+                return redirect(url_object['url'], 307)
+
+        return '<script>history.back(-1)</script>'
 
     def do(self):
 
