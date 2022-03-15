@@ -16,6 +16,7 @@
       "endpoint": "/cc",
       "version": "1.0",
       "need_auth": false,
+      "methods": ["GET"],
       "db_config": {
         "type": "SQLite",
         "path": "./sqlite3.db",
@@ -23,15 +24,16 @@
       }
     },
 
-    "git-counter": {
+    "git_counter": {
       "name": "Github profile counter",
       "endpoint": "/gc",
       "version": "non",
       "need_auth": false,
+      "methods": ["GET"],
       "db_config": {
         "type": "SQLite",
         "path": "./sqlite3.db",
-        "table": "gc"
+        "table": "github_counter"
       }
     }
   }
