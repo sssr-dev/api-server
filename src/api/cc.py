@@ -57,7 +57,17 @@ class ShortedLinks(DBHelp):
 
         return data
 
+    def _nginx_cc(self):
+        url, exit_code = self.args.get('nginx')
+        if exit_code == 0:
+            return url, exit_code
+        else:
+            return '<script>history.back(-1)</script>'
+
     def do(self):
+
+        if self.hostname == "cc.sssr.dev":
+            return self._nginx_cc()
 
         ver = self.args.get("v") or 10  # 1.1
         last_ver = "1.1"
@@ -100,9 +110,6 @@ class ShortedLinks(DBHelp):
             else:
                 data = self._get(short_code)
 
-                if self.hostname == "cc.sssr.dev":
-                    if data[1] == 0:
-                        return redirect(data[0]['url'])
         else:
             data = {"message": f"Missed one of fields: {fields_error_message}"}, 12
 

@@ -66,7 +66,7 @@ server {
     listen [::]:443;
     
     location / {
-        proxy_pass http://127.0.0.1:11491/cc?v=1.1&code=;   
+        proxy_pass http://127.0.0.1:11491/cc?nginx=;   
         proxy_set_header Ng-Real-Ip $remote_addr;
         proxy_set_header Ng-Real-Hostname $host;  
     }
