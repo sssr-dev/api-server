@@ -2,7 +2,7 @@ from flask import request
 from core import InitAPI, Responses, get_hostname
 import api
 
-codes = (403, 404, 500)
+codes = (403, 404, 405, 500)
 iapp = InitAPI("config.json")
 endpoints = iapp.endpoints
 app = iapp.app
