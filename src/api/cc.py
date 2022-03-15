@@ -13,7 +13,7 @@ vk_check_banned = "https://vk.com/away.php?to="
 class ShortedLinks(DBHelp):
 
     def __init__(self, request: flask.Request):
-        super().__init__("sqlite", Storage.cached_db['cc'], "links")
+        super().__init__(Storage.cached_db['cc'])
         self.args: dict = request.args
         headers = request.headers
         if headers.get('Cdn-Loop') == "cloudflare":

@@ -6,7 +6,7 @@
   "flask_settings": {
     "host": "0.0.0.0",
     "port": "11491",
-    "debug": false
+    "debug": true
   },
 
   "endpoints_info": {
@@ -14,13 +14,25 @@
     "cc": {
       "name": "Link shortening",
       "endpoint": "/cc",
+      "version": "1.0",
+      "need_auth": false,
+      "db_config": {
+        "type": "SQLite",
+        "path": "./sqlite3.db",
+        "table": "links"
+      }
+    },
+
+    "git-counter": {
+      "name": "Github profile counter",
+      "endpoint": "/gc",
       "version": "non",
       "need_auth": false,
       "db_config": {
         "type": "SQLite",
-        "path": "./sqlite_db/cc.db"
+        "path": "./sqlite3.db",
+        "table": "gc"
       }
     }
-
   }
 }

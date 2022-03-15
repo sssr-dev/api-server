@@ -11,10 +11,10 @@ def dict_factory(cursor, row):
 
 class DBHelp:
 
-    def __init__(self, db_type: str, db_conn, db_table: str):
-        self.db_type = db_type
-        self.db_conn = db_conn
-        self.db_table = db_table
+    def __init__(self, db_object):
+        self.db_type = db_object['raw']['type'].lower()
+        self.db_conn = db_object['conn']
+        self.db_table = db_object['raw']['table']
 
     def sqlite_execute(self, sql, tup=()):
 
@@ -32,10 +32,13 @@ class DBHelp:
 
         return r
 
-    def sql_get(self, what='*', where: Tuple[str, str] = None):
+    def sql_get(self, what='*', where: Tuple[str, str] = None, table: str = None):
+        if table is None:
+            table = self.db_table
+
         r = None
         if self.db_type == 'sqlite':
-            sql = f"SELECT {what} FROM `{self.db_table}`"
+            sql = f"SELECT {what} FROM `{table}`"
             if where:
                 sql += f" WHERE {where[0]}=?"
 
@@ -43,12 +46,18 @@ class DBHelp:
 
         return r
 
-    def sql_insert(self, keys: tuple, values: tuple) -> NoReturn:
+    def sql_insert(self, keys: tuple, values: tuple, table: str = None) -> NoReturn:
+        if table is None:
+            table = self.db_table
+
         if self.db_type == 'sqlite':
-            sql = f"INSERT INTO `{self.db_table}` {keys} VALUES ({'?, '.join('' for _ in values)+'?'})"
+            sql = f"INSERT INTO `{table}` {keys} VALUES ({'?, '.join('' for _ in values)+'?'})"
             self.sqlite_execute(sql, values)
 
-    def sql_update(self, what, where):
+    def sql_update(self, what, where, table: str = None):
+        if table is None:
+            table = self.db_table
+
         if self.db_type == 'sqlite':
-            sql = f"UPDATE `{self.db_table}` SET {what} WHERE {where}"
+            sql = f"UPDATE `{table}` SET {what} WHERE {where}"
             self.sqlite_execute(sql)

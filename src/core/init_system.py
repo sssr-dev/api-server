@@ -81,8 +81,8 @@ class InitAPI:
 
             if os.path.isfile(db_path):
                 db_conn = sqlite3.connect(db_path)
-                self._cached_db.update({endpoint: db_path})
-                Storage.cached_db.update({endpoint: db_path})
+                self._cached_db.update({endpoint: {"raw": db_config, "conn": db_path}})
+                Storage.cached_db.update({endpoint: {"raw": db_config, "conn": db_path}})
                 return db_conn
 
             else:
