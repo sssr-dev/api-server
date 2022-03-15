@@ -1,5 +1,6 @@
 import random
 import time
+import urllib.parse
 from string import ascii_letters, digits
 
 import flask
@@ -7,7 +8,7 @@ from flask import abort, redirect
 
 from core import DBHelp, Storage, get_hostname
 
-vk_check_banned = "https://vk.com/away.php?to="
+vk_check_banned = "https://vk.com/away.php?utf=1&to="
 
 
 class ShortedLinks(DBHelp):
@@ -27,7 +28,7 @@ class ShortedLinks(DBHelp):
         if not any((url.startswith("http://"), url.startswith("https://"))):
             return {"error": f"Allow only 'http://' or 'https://' urls."}, 10
 
-        url_with_check = vk_check_banned + url
+        url_with_check = vk_check_banned + urllib.parse.quote_plus(url)
         short = self._create_short()
 
         url_check = self.sql_get("url_raw", ("url_short", short))
