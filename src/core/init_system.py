@@ -4,6 +4,8 @@ from typing import Union, Any, Callable
 import sqlite3
 from loguru import logger
 from flask import Flask
+
+from .Responses import Responses
 from .Endpoint import Endpoint
 from .Storage import Storage
 
@@ -51,7 +53,9 @@ class InitAPI:
     def _create_endpoints(self):
         for k, v in self.endpoints_info.items():
             e = Endpoint()
+            e.import_name = k
             e.name = v.get("name")
+            e.methods = v.get("methods") or ['GET']
             e.endpoint = v.get('endpoint')
             e.version = v.get("version")
             e.need_auth = v.get("need_auth")
@@ -90,10 +94,18 @@ class InitAPI:
 
         raise ValueError(f"What is '{db_type}'?")
 
+    def response(self, data):
+
+        return Responses.make(Responses.okay(*data) if data[1] == 0 else Responses.error(*data), 404 if data[1] == 404 else 200)
+
     def add_route(self, endpoint: str, f: Callable):
         self.debug(f"Add route for endpoint '{endpoint}'")
         self.get_db_conn(endpoint)
-        self.app.route(**self.endpoints[endpoint] << "fs")(f)
+        endpoint = self.endpoints[endpoint]
+        self.debug(endpoint)
+        l = lambda *args, **kwargs: self.response(f(*args, **kwargs))
+        l.__name__ = endpoint.import_name
+        self.app.route(**endpoint << "fs")(l)
 
     @property
     def app(self) -> Flask:

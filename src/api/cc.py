@@ -83,4 +83,4 @@ class ShortedLinks(DBHelp):
         if not data[0]:
             abort(403)
 
-        return Responses.make(Responses.okay(*data) if data[1] == 0 else Responses.error(*data), 404 if data[1] == 404 else 200)
+        return data

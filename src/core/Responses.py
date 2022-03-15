@@ -18,7 +18,7 @@ class Responses:
 
         :return: {"code": code, "object": data}
         """
-        return {"code": code, "object": data}
+        return {"code": int(code), "object": data}
 
     @staticmethod
     def error(error: str, code: Union[str, int]) -> dict:
@@ -29,7 +29,7 @@ class Responses:
         :param error: Error message
         :return: {"code": err.value, "error": err.name}
         """
-        return {"code": str(code), "error": error}
+        return {"code": int(code), "error": error}
 
     @staticmethod
     def make(rv: Union[dict, int, str, list], code: int = 200, cookies: list = None) -> flask.Response:
