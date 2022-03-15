@@ -5,7 +5,7 @@ from string import ascii_letters, digits
 import flask
 from flask import abort, redirect
 
-from core import Responses, DBHelp, Storage
+from core import DBHelp, Storage, get_hostname
 
 vk_check_banned = "https://vk.com/away.php?to="
 
@@ -15,20 +15,13 @@ class ShortedLinks(DBHelp):
     def __init__(self, request: flask.Request):
         super().__init__(Storage.cached_db['cc'])
         self.args: dict = request.args
-        headers = request.headers
-        if headers.get('Cdn-Loop') == "cloudflare":
-            # Cloudflare proxy
-            self.from_ip: str = request.headers.get("Cf-Connecting-Ip") or request.headers.get("Host")
-        else:
-            # Nginx proxy
-            self.from_ip: str = request.headers.get("X-Real-IP") or request.headers.get("Host")
+        self.form: dict = request.form
+        self.from_ip, self.hostname = get_hostname(request)
 
-        # Add to nginx: proxy_set_header X-Real-HostName $host;
-        self.hostname = headers.get('X-Real-Hostname')
+        self.short_code_len = 5
 
-    @staticmethod
-    def _create_short():
-        return ''.join([random.choice(ascii_letters + digits) for _ in range(5)])
+    def _create_short(self):
+        return ''.join([random.choice(ascii_letters + digits) for _ in range(self.short_code_len)])
 
     def _create(self, url: str) -> tuple:
         if not any((url.startswith("http://"), url.startswith("https://"))):
@@ -59,28 +52,63 @@ class ShortedLinks(DBHelp):
 
             data = url, 0
         else:
-            data = f"Not found '{code}'", 404
+            data = {"message": f"No url for '{code}'."}, 404
 
         return data
 
     def do(self):
 
-        url_create = self.args.get('create')
-        short_code = self.args.get("get")
+        ver = self.args.get("v") or 10  # 1.1
+        last_ver = "1.1"
+        available_vers = ['1.0', '1.1']
+        deprecation_warn_example = \
+            f"Deprecated warn: 'cc' version {{}} has deprecated warn on fields: {{}}. Use {last_ver} 'cc' version."
 
-        data = None, 500
+        if isinstance(ver, str):
+            ver = ver.replace(".", '')
+            if ver.isdigit():
+                ver = int(ver)
+
+        if ver == 10:
+            deprecation_warn = True
+            fields = ['create', 'get']
+            deprecation_warn_message = deprecation_warn_example.format("1.0", ", ".join(field for field in fields))
+            fields_error_message = "'create' for create cc url or 'get' get url from code"
+            url_create = self.args.get("create")  # GET field 'create'
+            short_code = self.args.get("get")  # GET field 'get'
+
+        elif ver == 11:
+            deprecation_warn = False
+            fields = ['url']
+            deprecation_warn_message = None
+            fields_error_message = "POST field 'url' for create cc or GET field 'code' for get raw url"
+            url_create = self.form.get('url')  # POST field 'url'
+            short_code = self.args.get("code")  # GET field 'url'
+
+        else:
+            return {"message": f"Invalid field '{ver}'. Available versions: {', '.join(ver for ver in available_vers)}"}, 11
 
         if url_create:
             data = self._create(url_create)
 
         elif short_code:
-            data = self._get(short_code)
 
-            if self.hostname == "cc.sssr.dev":
-                if data[1] == 0:
-                    return redirect(data[0]['url'])
+            if len(short_code) != self.short_code_len:
+                data = {"message": "Invalid code"}, 404
+
+            else:
+                data = self._get(short_code)
+
+                if self.hostname == "cc.sssr.dev":
+                    if data[1] == 0:
+                        return redirect(data[0]['url'])
+        else:
+            data = {"message": f"Missed one of fields: {fields_error_message}"}, 12
 
         if not data[0]:
             abort(403)
+
+        if deprecation_warn:
+            data[0].update({"warn": deprecation_warn_message})
 
         return data
