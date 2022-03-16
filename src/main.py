@@ -18,9 +18,9 @@ def pa():
     j = dict()
     j.update({"name": iapp.name,
               "version": iapp.config['version'],
-              "client_info": {
-                  "ip": from_ip,
-                  "hostname": hostname
+              "connection_info": {
+                  "hostname": hostname,
+                  "ip": from_ip
               },
               "endpoints": {}})
     for k, v in endpoints.items():
