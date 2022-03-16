@@ -1,8 +1,10 @@
 import json
+import logging
 import os
 from typing import Union, Any, Callable
 import sqlite3
 from loguru import logger
+import loguru
 from flask import Flask
 
 from .Responses import Responses
@@ -12,10 +14,18 @@ from .Storage import Storage
 Storage = Storage()
 
 
+def reg_fake_log():
+    l = lambda *x: logger.info((x[2] % x[3:][0]) if len(x[3:][0]) > 0 else x[2])
+    l.__name__ = "fake log"
+    logging.Logger._log = l
+
+
 class InitAPI:
 
     # noinspection PyTypeChecker
     def __init__(self, config_path):
+
+        reg_fake_log()
 
         self.log = logger
         self.debug = self.log.debug
@@ -100,12 +110,12 @@ class InitAPI:
             return Responses.make(Responses.okay(*data) if data[1] == 0 else Responses.error(*data), 404 if data[1] == 404 else 200)
         return data
 
-    def add_route(self, endpoint: str, f: Callable):
+    def add_route(self, endpoint: str, cls: Callable):
         self.debug(f"Add route for endpoint '{endpoint}'")
         self.get_db_conn(endpoint)
         endpoint = self.endpoints[endpoint]
         self.debug(endpoint)
-        l = lambda *args, **kwargs: self.response(f(*args, **kwargs))
+        l = lambda *args, **kwargs: self.response(cls().do(*args, **kwargs))
         l.__name__ = endpoint.import_name
         self.app.route(**endpoint << "fs")(l)
 

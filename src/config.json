@@ -3,6 +3,12 @@
   "name": "SSSR-dev api",
   "version": "Beta 0.1.1",
 
+  "tokens_settings": {
+    "type": "SQLite",
+    "path": "./sqlite3.db",
+    "table": "tokens"
+  },
+
   "flask_settings": {
     "host": "0.0.0.0",
     "port": "11491",
@@ -35,6 +41,20 @@
         "path": "./sqlite3.db",
         "table": "github_counter"
       }
+    },
+
+    "auth": {
+      "name": "Github profile counter",
+      "endpoint": "/method/auth.<method>",
+      "version": "non",
+      "need_auth": false,
+      "methods": ["GET"],
+      "db_config": {
+        "type": "SQLite",
+        "path": "./sqlite3.db",
+        "table": "github_counter"
+      }
     }
+
   }
 }

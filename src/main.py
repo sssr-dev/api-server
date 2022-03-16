@@ -13,7 +13,13 @@ def pa():
     from_ip, hostname = get_hostname(request)
 
     j = dict()
-    j.update({"name": iapp.name, "version": iapp.config['version'], "client_info": {"ip": from_ip, "href": hostname}, "endpoints": {}})
+    j.update({"name": iapp.name,
+              "version": iapp.config['version'],
+              "client_info": {
+                  "ip": from_ip,
+                  "href": hostname
+              },
+              "endpoints": {}})
     for k, v in endpoints.items():
         j['endpoints'].update({k: f'{v!s}'})
 
@@ -22,8 +28,9 @@ def pa():
 
 iapp.app_errors_handler(codes, lambda error: (Responses.make(Responses.error(error.name, error.code)), error.code))
 
-iapp.add_route("cc", lambda: api.ShortedLinks(request).do())
-iapp.add_route("git_counter", lambda: api.GitHubCounter(request).do())
+iapp.add_route("cc", lambda: api.ShortedLinks(request))
+iapp.add_route("git_counter", lambda: api.GitHubCounter(request))
+iapp.add_route("auth", lambda: api.SSSRAuth(request))
 
 if __name__ == '__main__':
     iapp.run()

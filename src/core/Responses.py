@@ -21,7 +21,7 @@ class Responses:
         return {"code": int(code), "object": data}
 
     @staticmethod
-    def error(error: str, code: Union[str, int]) -> dict:
+    def error(error: Union[dict, str], code: Union[str, int]) -> dict:
         """
         Стандартизация вывода ошибки для пользователя.
 
@@ -29,6 +29,7 @@ class Responses:
         :param error: Error message
         :return: {"code": err.value, "error": err.name}
         """
+        error = error if isinstance(error, dict) else {"message": f"{error!s}"}
         return {"code": int(code), "error": error}
 
     @staticmethod

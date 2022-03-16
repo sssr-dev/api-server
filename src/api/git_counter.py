@@ -1,4 +1,4 @@
-from core import Responses, DBHelp, Storage
+from core import DBHelp, Storage
 
 
 class GitHubCounter(DBHelp):
