@@ -4,7 +4,6 @@ from flask import request
 from core import InitAPI, Responses, get_hostname
 import api
 
-
 codes = (403, 404, 405, 500)
 iapp = InitAPI("config.json")
 endpoints = iapp.endpoints
@@ -16,14 +15,23 @@ def pa():
     from_ip, hostname = get_hostname(request)
 
     j = dict()
-    j.update({"name": iapp.name,
-              "version": iapp.config['version'],
-              "build": iapp.config['build'],
-              "connection_info": {
-                  "hostname": hostname,
-                  "ip": from_ip
-              },
-              "endpoints": {}})
+    j.update(
+        {
+            "api_info": {
+                "name": iapp.name,
+                "version": iapp.config['version'],
+                "build": iapp.config['build'],
+                "debug": iapp.config['flask_settings']['debug'],
+            },
+            "connection_info": {
+                "hostname": hostname,
+                "ip": from_ip
+            },
+            "endpoints": {
+
+            }
+        }
+    )
     for k, v in endpoints.items():
         j['endpoints'].update({k: f'{v!s}'})
 

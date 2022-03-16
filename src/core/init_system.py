@@ -129,4 +129,8 @@ class InitAPI:
         return self.__flask
 
     def run(self):
+
+        if os.getenv("FLASK_DEBUG"):
+            self.flask_settings['debug'] = True
+
         self.__flask.run(**self.flask_settings)
