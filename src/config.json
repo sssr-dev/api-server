@@ -2,6 +2,7 @@
 
   "name": "SSSR-dev api",
   "version": "Beta 0.1.1",
+  "build": 441,
 
   "tokens_settings": {
     "type": "SQLite",
@@ -12,7 +13,7 @@
   "flask_settings": {
     "host": "0.0.0.0",
     "port": "11491",
-    "debug": true
+    "debug": false
   },
 
   "endpoints_info": {

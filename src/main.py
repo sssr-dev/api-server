@@ -18,6 +18,7 @@ def pa():
     j = dict()
     j.update({"name": iapp.name,
               "version": iapp.config['version'],
+              "build": iapp.config['build'],
               "connection_info": {
                   "hostname": hostname,
                   "ip": from_ip
