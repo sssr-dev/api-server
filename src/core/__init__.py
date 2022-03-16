@@ -1,3 +1,5 @@
+from urllib.parse import urlparse as _urlparse
+
 import flask
 
 from .init_system import InitAPI, Storage
@@ -30,6 +32,6 @@ def get_hostname(request: flask.Request):
     # Add to nginx: proxy_set_header Ng-Real-Hostname $host;
     hostname: str = headers.get(ProxyHeaders.NGINX_HOSTNAME)
     if hostname is None:
-        hostname = request.host
+        hostname = _urlparse(request.base_url).hostname
 
     return from_ip, hostname

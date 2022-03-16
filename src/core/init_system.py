@@ -14,10 +14,13 @@ from .Storage import Storage
 Storage = Storage()
 
 
-def reg_fake_log():
-    l = lambda *x: logger.info((x[2] % x[3:][0]) if len(x[3:][0]) > 0 else x[2])
-    l.__name__ = "fake log"
-    logging.Logger._log = l
+def fake_log(*x):
+
+    phrase = (x[2] % x[3:][0]) if len(x[3:][0]) > 0 else x[2]
+
+    if "\n" in phrase:
+        phrase = "\n" + phrase
+    logger.info(phrase)
 
 
 class InitAPI:
@@ -25,7 +28,7 @@ class InitAPI:
     # noinspection PyTypeChecker
     def __init__(self, config_path):
 
-        reg_fake_log()
+        logging.Logger._log = fake_log
 
         self.log = logger
         self.debug = self.log.debug

@@ -1,6 +1,9 @@
+from urllib.parse import urlparse
+
 from flask import request
 from core import InitAPI, Responses, get_hostname
 import api
+
 
 codes = (403, 404, 405, 500)
 iapp = InitAPI("config.json")
@@ -17,7 +20,7 @@ def pa():
               "version": iapp.config['version'],
               "client_info": {
                   "ip": from_ip,
-                  "href": hostname
+                  "hostname": hostname
               },
               "endpoints": {}})
     for k, v in endpoints.items():
