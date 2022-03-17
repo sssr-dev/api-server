@@ -3,13 +3,15 @@
 # Developed by Ahegao Devs
 # (c) ahegao.ovh 2022
 import flask
-from typing import Union
+from typing import Union, Dict, Any
+
+from flask import Response
 
 
 class Responses:
 
     @staticmethod
-    def okay(data: dict or int or str or list, code: int = 0) -> dict:
+    def okay(data: dict or int or str or list, code: Union[str, int] = 0) -> Union[Response, dict[str, Union[str, int]]]:
         """
         Стандартизация вывода информации пользователю.
 
@@ -18,6 +20,10 @@ class Responses:
 
         :return: {"code": code, "object": data}
         """
+
+        if isinstance(data, Response):
+            return data
+
         return {"code": int(code), "object": data}
 
     @staticmethod
@@ -29,6 +35,10 @@ class Responses:
         :param error: Error message
         :return: {"code": err.value, "error": err.name}
         """
+
+        if isinstance(error, Response):
+            return error
+
         error = error if isinstance(error, dict) else {"message": f"{error!s}"}
         return {"code": int(code), "error": error}
 
@@ -41,6 +51,10 @@ class Responses:
         :param cookies: Отправляемые куки
         :return: Response
         """
+
+        if isinstance(rv, Response):
+            return rv
+
         if cookies is None:
             cookies = []
         resp = flask.jsonify(rv)

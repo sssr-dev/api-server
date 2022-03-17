@@ -31,9 +31,9 @@
       }
     },
 
-    "git_counter": {
-      "name": "Github profile counter",
-      "endpoint": "/gc",
+    "svg_creator": {
+      "name": "Svg creator",
+      "endpoint": "/svg/<path:svg_type>",
       "version": "non",
       "need_auth": false,
       "methods": ["GET"],

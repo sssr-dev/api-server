@@ -1,3 +1,3 @@
 from .cc import ShortedLinks
-from .git_counter import GitHubCounter
+from .svg_creator import SvgCreator
 from .auth import SSSRAuth

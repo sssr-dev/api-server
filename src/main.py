@@ -41,7 +41,7 @@ def pa():
 iapp.app_errors_handler(codes, lambda error: (Responses.make(Responses.error(error.name, error.code)), error.code))
 
 iapp.add_route("cc", lambda: api.ShortedLinks(request))
-iapp.add_route("git_counter", lambda: api.GitHubCounter(request))
+iapp.add_route("svg_creator", lambda: api.SvgCreator(request))
 iapp.add_route("auth", lambda: api.SSSRAuth(request))
 
 if __name__ == '__main__':
