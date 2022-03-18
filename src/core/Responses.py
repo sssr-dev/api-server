@@ -3,9 +3,11 @@
 # Developed by Ahegao Devs
 # (c) ahegao.ovh 2022
 import flask
-from typing import Union, Dict, Any
+from typing import Union
 
-from flask import Response
+from flask import Response, request
+from . import tools
+import core
 
 
 class Responses:
@@ -27,7 +29,7 @@ class Responses:
         return {"code": int(code), "object": data}
 
     @staticmethod
-    def error(error: Union[dict, str], code: Union[str, int]) -> dict:
+    def error(error: Union[dict, str], code: Union[str, int]) -> Union[Response, dict[str, Union[str, int]]]:
         """
         Стандартизация вывода ошибки для пользователя.
 
@@ -39,7 +41,13 @@ class Responses:
         if isinstance(error, Response):
             return error
 
-        error = error if isinstance(error, dict) else {"message": f"{error!s}"}
+        if not isinstance(error, dict):
+            error = {"message": f"{error!s}"}
+
+        ip, hostname = tools.get_hostname(request)
+
+        error.update({"hostname": hostname, "ip": ip if ip != core.Storage.self_ip else None, "args": dict(request.args), "form": dict(request.form)})
+
         return {"code": int(code), "error": error}
 
     @staticmethod

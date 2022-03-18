@@ -1,4 +1,3 @@
 class Storage:
-
-    def __init__(self):
-        self.cached_db = dict()
+    cached_db = dict()
+    self_ip = None

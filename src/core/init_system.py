@@ -4,14 +4,13 @@ import os
 from typing import Union, Any, Callable
 import sqlite3
 from loguru import logger
-import loguru
 from flask import Flask
 
 from .Responses import Responses
 from .Endpoint import Endpoint
-from .Storage import Storage
+from .Storage import Storage as _storage
 
-Storage = Storage()
+Storage = _storage()
 
 
 def fake_log(*x):
@@ -30,6 +29,8 @@ class InitAPI:
 
         logging.Logger._log = fake_log
 
+        self.storage = Storage
+
         self.log = logger
         self.debug = self.log.debug
 
@@ -40,7 +41,7 @@ class InitAPI:
         self.flask_settings: dict = None
 
         self.endpoints: dict = dict()
-        self.endpoints_info: dict = None
+        self.endpoints_config: dict = {}
 
         self.config_path = config_path
 
@@ -61,10 +62,10 @@ class InitAPI:
 
         self.name = self.config.get("name")
         self.flask_settings = self.config.get("flask_settings")
-        self.endpoints_info = self.config.get("endpoints_info")
+        self.endpoints_config = self.config.get("endpoints")
 
     def _create_endpoints(self):
-        for k, v in self.endpoints_info.items():
+        for k, v in self.endpoints_config.items():
             e = Endpoint()
             e.import_name = k
             e.name = v.get("name")

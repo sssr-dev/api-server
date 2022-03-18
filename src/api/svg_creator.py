@@ -1,5 +1,5 @@
 from core import DBHelp, Storage
-from flask import make_response
+from flask import make_response, request
 
 svg_path = "api/svg_raw"
 
@@ -18,7 +18,7 @@ files = {
 
 class SvgCreator(DBHelp):
 
-    def __init__(self, request):
+    def __init__(self):
         super().__init__(Storage.cached_db['svg_creator'])
         self.style = {"svg_style": "", "g_1": ""}
         self.svg_params = {}

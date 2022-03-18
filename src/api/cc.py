@@ -3,17 +3,18 @@ import time
 import urllib.parse
 from string import ascii_letters, digits
 
-import flask
-from flask import abort, redirect
+from flask import abort, redirect, request
 
-from core import DBHelp, Storage, get_hostname
+from core import DBHelp, Storage
+
+from core.tools import get_hostname
 
 vk_check_banned = "https://vk.com/away.php?utf=1&to="
 
 
 class ShortedLinks(DBHelp):
 
-    def __init__(self, request: flask.Request):
+    def __init__(self):
         super().__init__(Storage.cached_db['cc'])
         self.args: dict = request.args
         self.form: dict = request.form
