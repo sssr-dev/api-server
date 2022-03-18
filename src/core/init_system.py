@@ -1,10 +1,12 @@
 import json
 import logging
 import os
-from typing import Union, Any, Callable
+from typing import Union, Any, Callable, List
 import sqlite3
+from urllib.parse import quote_plus
+
 from loguru import logger
-from flask import Flask
+from flask import Flask, redirect
 
 from .Responses import Responses
 from .Endpoint import Endpoint
@@ -22,7 +24,7 @@ def fake_log(*x):
     logger.info(phrase)
 
 
-class InitAPI:
+class InitSystem:
 
     # noinspection PyTypeChecker
     def __init__(self, config_path):
@@ -35,18 +37,24 @@ class InitAPI:
         self.debug = self.log.debug
 
         self.config = {"name": "NO NAME", "flask_settings": {"host": "localhost", "port": 3000}}
+
         self.name: str = None
+        self.base_site = None
 
         self.__flask: Flask = None
         self.flask_settings: dict = None
 
-        self.endpoints: dict = dict()
+        self.endpoints: dict = {}
+        self.redirects: List[dict] = []
+
         self.endpoints_config: dict = {}
+        self.redirects_config: dict = {}
 
         self.config_path = config_path
 
         self._read_config()
         self._create_endpoints()
+        self._create_redirects()
 
         self._cached_db: dict = dict()
 
@@ -61,8 +69,10 @@ class InitAPI:
             self.debug(self.config)
 
         self.name = self.config.get("name")
+        self.base_site = self.config.get("base_site")
         self.flask_settings = self.config.get("flask_settings")
         self.endpoints_config = self.config.get("endpoints")
+        self.redirects_config = self.config.get("redirects")
 
     def _create_endpoints(self):
         for k, v in self.endpoints_config.items():
@@ -76,6 +86,19 @@ class InitAPI:
             e.db_config = v.get("db_config")
             self.debug(f"{e!r}")
             self.endpoints.update({k: e})
+
+    def _create_redirects(self):
+        for v in self.redirects_config.values():
+            from_route = v['from']
+            ref = ""
+            if v['ref']:
+                ref += quote_plus(v['ref'])
+            l = lambda *x: redirect(v['to'].format(base_site=self.base_site)+ref, v['code'])
+            l.__name__ = from_route
+
+            self.app.route(from_route)(l)
+            self.debug(f"Add redirect '{from_route}' to '{v['to'].format(base_site=self.base_site)+ref}' with code {v['code']}")
+            self.redirects.append(v)
 
     def app_errors_handler(self, codes: Union[list, tuple, int], f: Any):
         if isinstance(codes, int):

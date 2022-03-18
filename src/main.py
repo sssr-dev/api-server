@@ -1,12 +1,12 @@
 from flask import request
 import requests
 
-from core import InitAPI, Responses
+from core import InitSystem, Responses
 import core.tools
 import api
 
 codes = (403, 404, 405, 500)
-iapp = InitAPI("config.json")
+iapp = InitSystem("config.json")
 endpoints = iapp.endpoints
 app = iapp.app
 storage = iapp.storage

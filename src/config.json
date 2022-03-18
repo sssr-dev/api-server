@@ -1,8 +1,9 @@
 {
 
   "name": "SSSRdev api",
-  "version": "0.1.2",
-  "build": 840,
+  "version": "0.1.3",
+  "build": 852,
+  "base_site": "https://sssr.dev/",
 
   "tokens_settings": {
     "type": "SQLite",
@@ -16,7 +17,7 @@
     "debug": false
   },
 
-  "endpoints_info": {
+  "endpoints": {
 
     "cc": {
       "name": "Link shortening",
@@ -47,14 +48,25 @@
     "auth": {
       "name": "Auth module",
       "endpoint": "/method/auth.<method>",
-      "version": null,
-      "need_auth": true,
+      "version": "null",
+      "need_auth": false,
       "methods": ["GET"],
       "db_config": {
         "type": "SQLite",
         "path": "./sqlite3.db",
         "table": "github_counter"
       }
+    }
+
+  },
+
+  "redirects": {
+
+    "svg_creator": {
+      "from": "/svg",
+      "to": "https://github.com/sssr-dev/api-server?",
+      "code": 302,
+      "ref": "svg://"
     }
 
   }
