@@ -55,7 +55,8 @@ def pa():
             },
             "endpoints": {
 
-            }
+            },
+            "redirects": iapp.redirects
         }
     )
     for k, v in endpoints.items():

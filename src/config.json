@@ -2,7 +2,7 @@
 
   "name": "SSSRdev api",
   "version": "0.1.3",
-  "build": 852,
+  "build": 867,
   "base_site": "https://sssr.dev/",
 
   "tokens_settings": {
