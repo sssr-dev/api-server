@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="{svg_width}" height="{svg_height}" role="img" aria-label="{title}">
+    <title>{title}</title>
+    {svg_style}
+    <g {g_1}>
+        <rect width="{rect_width_1}" height="{svg_height}" fill="#555"/>
+        <rect x="{rect_width_1}" width="{rect_width_2}" height="{svg_height}" fill="{color}"/>
+        {add_rect}
+    </g>
+    <g text-anchor="middle"
+       font-family="Verdana,Geneva,DejaVu Sans,sans-serif">
+        {pre_text}
+        <text x="{text_position_x_1}" y="{text_position_y_1}" font-size="{text_font_size_1}" fill="#fff">
+            {text_string_1}
+        </text>
+        <text x="{text_position_x_2}" y="{text_position_y_2}" font-size="{text_font_size_2}" fill="#fff" font-weight="bold">
+            {text_string_2}
+        </text>
+    </g>
+</svg>

@@ -1,8 +1,8 @@
 {
 
-  "name": "SSSR-dev api",
-  "version": "Beta 0.1.1",
-  "build": 447,
+  "name": "SSSRdev api",
+  "version": "0.1.2",
+  "build": 840,
 
   "tokens_settings": {
     "type": "SQLite",
@@ -34,7 +34,7 @@
     "svg_creator": {
       "name": "Svg creator",
       "endpoint": "/svg/<path:svg_type>",
-      "version": "non",
+      "version": "1.0; Include: ['magic']",
       "need_auth": false,
       "methods": ["GET"],
       "db_config": {
@@ -45,10 +45,10 @@
     },
 
     "auth": {
-      "name": "Github profile counter",
+      "name": "Auth module",
       "endpoint": "/method/auth.<method>",
-      "version": "non",
-      "need_auth": false,
+      "version": null,
+      "need_auth": true,
       "methods": ["GET"],
       "db_config": {
         "type": "SQLite",
