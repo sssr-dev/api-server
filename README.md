@@ -6,7 +6,7 @@
     <a href="https://github.com/SantaSpeen"><img src="https://img.santaspeen.ru/github/magic.svg" alt="magic"></a>
     <br/>
     <a href="./src/main.py">
-        <img src="./.readme_files/preview.png" alt="preview ds">
+        <img src="https://img.sssr.dev/github/api-server/preview.png" alt="preview">
     </a>
     <br/>
 </p>
