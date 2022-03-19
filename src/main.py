@@ -1,3 +1,6 @@
+import os
+import sys
+
 from flask import request
 import requests
 
@@ -77,5 +80,8 @@ iapp.add_route("svg_creator", lambda: api.SvgCreator())
 iapp.add_route("auth", lambda: api.SSSRAuth())
 
 if __name__ == '__main__':
+    path = sys.argv[0][:-7]
+    os.chdir(path)
+    print("Change work dir:", path)
     set_self_ip()
     iapp.run()
