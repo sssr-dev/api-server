@@ -33,7 +33,7 @@ def set_self_ip(first=True):
         from time import sleep
         print("set_self_ip: Sleep for 3 sec.")
         sleep(3)
-        r = requests.get("https://api-dev.sssr.dev/error/").json()
+        r = requests.get("https://api.sssr.dev/error/").json()
         if r.get("error"):
             self_ip = r['error']['ip']
             storage.self_ip = self_ip
