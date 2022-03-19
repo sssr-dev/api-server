@@ -38,8 +38,10 @@ class ShortedLinks(DBHelp):
                 short = self._create_short()
                 url_check = self.sql_get("url_raw", ("url_short", short))
 
+        from_ip = self.from_ip if Storage.self_ip != self.from_ip else "0.0.0.0"
+
         self.sql_insert(("from_ip", "unix_timestamp", "url_raw", "url_check_banned", "url_short"),
-                        (self.from_ip, time.time(), url, url_with_check, short))
+                        (from_ip,   time.time(),      url,        url_with_check,     short))
 
         return {"short": "https://cc.sssr.dev/" + short, "url": url}, 0
 

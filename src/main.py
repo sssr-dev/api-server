@@ -65,6 +65,11 @@ def pa():
     return Responses.okay(j)
 
 
+@app.route('/robots.txt')
+def robots():
+    return "User-agent: *\nDisallow: /"
+
+
 iapp.app_errors_handler(codes, lambda error: (Responses.make(Responses.error(error.name, error.code)), error.code))
 
 iapp.add_route("cc", lambda: api.ShortedLinks())
